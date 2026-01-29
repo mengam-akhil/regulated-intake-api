@@ -1,44 +1,12 @@
-from fastapi import FastAPI, HTTPException
-from uuid import uuid4
+from fastapi import FastAPI
+from db.database import init_db
 
-from models.request import IngestRequest
-from models.fintech import FintechTransaction
-from models.health import HealthObservation
+from db.routes.documents import router as documents_router
+from db.routes.audit import router as audit_router
 
 app = FastAPI(title="Regulated Intake API")
 
+init_db()
 
-@app.get("/health")
-async def health_check():
-    return {"status": "ok"}
-
-
-@app.post("/ingest")
-async def ingest_data(request: IngestRequest):
-    request_id = str(uuid4())
-
-    try:
-        if request.domain == "fintech":
-            validated = FintechTransaction(**request.payload)
-
-        elif request.domain == "health":
-            validated = HealthObservation(**request.payload)
-
-        else:
-            raise HTTPException(status_code=400, detail="Unsupported domain")
-
-        return {
-            "request_id": request_id,
-            "domain": request.domain,
-            "status": "success",
-            "validated_data": validated.model_dump()
-        }
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=422,
-            detail={
-                "request_id": request_id,
-                "error": str(e)
-            }
-        )
+app.include_router(documents_router, prefix="/documents", tags=["Documents"])
+app.include_router(audit_router, prefix="/audit", tags=["Audit"])

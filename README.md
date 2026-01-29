@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Regulated Intake API
 
 A compliance-oriented backend API that ingests unstructured regulated data
@@ -37,3 +38,8 @@ using schema validation, domain routing, and traceable request handling.
 ### Health Check
 "Used for load balancers and container health probes"
 
+=======
+>>>>>>> 6c290fb (Day 14:Persistence & audit trail with SQLite completed)
+## Persistence & Audit Trail (Day 14)
+-SQLite-backed document traceability
+-Audit logs for regulatory reconstruction
